@@ -55,9 +55,8 @@ int main(int argc, char *argv[])
     SDL_Quit();
     return EXIT_FAILURE;
   }
-  std::cout << "Hello" << std::endl;
-  std::filesystem::create_directories("output");
-  SDL_IOStream *output = SDL_IOFromFile("output/main.vert.dxil", "w");
+  std::filesystem::create_directories("build/Output");
+  SDL_IOStream *output = SDL_IOFromFile("build/Output/main.vert.dxil", "w");
   if (!output)
   {
     SDL_LogError(SDL_LOG_CATEGORY_GPU, "Failed to open output file: %s", SDL_GetError());

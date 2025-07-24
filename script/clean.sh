@@ -18,5 +18,5 @@ elif [ $RESOURCE == 1 ]; then
 fi
 
 if [ $OUTPUT == 1 ]; then
-  rm -rf build/output
+  rm -rf build/Output
 fi
