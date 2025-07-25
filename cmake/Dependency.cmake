@@ -6,15 +6,17 @@ set(STB_VERSION "f58f558")
 CPMAddPackage(
   URI
   "gh:libsdl-org/SDL#release-${SDL_VERSION}"
+  NAME "sdl"
   OPTIONS "SDL_INSTALL OFF" "SDL_UNINSTALL OFF" "SDL_INSTALL_TESTS OFF" "SDL_TESTS OFF"
 )
-list(APPEND SYSTEM_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR}/_deps/sdl-src/include")
+list(APPEND SYSTEM_INCLUDE_DIRECTORIES "${sdl_SOURCE_DIR}/include")
 list(APPEND LIBRARIES "SDL3-static")
 
 install(TARGETS "SDL3-static" "SDL3_Headers" EXPORT "LLVMExports")
 CPMAddPackage(
   URI
   "gh:libsdl-org/SDL_shadercross#${SDL_SHADERCROSS_VERSION}"
+  NAME "sdl_shadercross"
   OPTIONS
     "SDLSHADERCROSS_VENDORED ON"
     "SDLSHADERCROSS_SHARED OFF"
@@ -22,12 +24,12 @@ CPMAddPackage(
     "SDLSHADERCROSS_STATIC ON"
     "SDLSHADERCROSS_CLI OFF"
 )
-list(APPEND SYSTEM_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR}/_deps/SDL_shadercross-src/include")
+list(APPEND SYSTEM_INCLUDE_DIRECTORIES "${sdl_shadercross_SOURCE_DIR}/include")
 list(APPEND LIBRARIES "SDL3_shadercross-static")
 
 set(
   DXCOMPILER_DLL_SOURCE
-  "${CMAKE_CURRENT_BINARY_DIR}/_deps/sdl_shadercross-build/external/DirectXShaderCompiler/${CMAKE_BUILD_TYPE}/bin/dxcompiler.dll"
+  "${sdl_shadercross_BINARY_DIR}/external/DirectXShaderCompiler/${CMAKE_BUILD_TYPE}/bin/dxcompiler.dll"
 )
 set(DXCOMPILER_DLL_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/dxcompiler.dll")
 add_custom_target(
@@ -37,9 +39,6 @@ add_custom_target(
 )
 list(APPEND DEPENDENCIES "CopyDXCompiler")
 
-set(STB_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/_deps/stb-src")
-set(STB_IMAGE "${STB_DIRECTORY}/stb_image.h")
-if(NOT EXISTS "${STB_IMAGE}")
-  file(DOWNLOAD "https://github.com/nothings/stb/blob/${STB_VERSION}/stb_image.h?raw=true" "${STB_IMAGE}")
-endif()
-list(APPEND SYSTEM_INCLUDE_DIRECTORIES "${STB_DIRECTORY}")
+CPMAddPackage(URI "gh:nothings/stb#${STB_VERSION}" NAME "stb")
+list(APPEND SYSTEM_INCLUDE_DIRECTORIES "${stb_SOURCE_DIR}")
+list(APPEND COMPILER_DEFINITIONS "STB_IMAGE_IMPLEMENTATION")
