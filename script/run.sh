@@ -1,6 +1,6 @@
 #!/bin/bash
 
 OUTPUT=$(find . -name "CSResource.exe")
-ARGUMENTS="compile resource/shader/main.vert resource/shader/main.frag build/Output"
+ARGUMENTS="resource/shader/main.vert resource/shader/main.frag build/Output/Shader build/Output/Include build/Output/Source"
 
 $OUTPUT $ARGUMENTS

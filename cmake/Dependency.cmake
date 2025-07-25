@@ -10,8 +10,8 @@ CPMAddPackage(
 )
 list(APPEND SYSTEM_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR}/_deps/sdl-src/include")
 list(APPEND LIBRARIES "SDL3-static")
-install(TARGETS "SDL3-static" "SDL3_Headers" EXPORT "LLVMExports")
 
+install(TARGETS "SDL3-static" "SDL3_Headers" EXPORT "LLVMExports")
 CPMAddPackage(
   URI
   "gh:libsdl-org/SDL_shadercross#${SDL_SHADERCROSS_VERSION}"
