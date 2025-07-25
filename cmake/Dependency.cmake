@@ -26,18 +26,17 @@ CPMAddPackage(
 )
 list(APPEND SYSTEM_INCLUDE_DIRECTORIES "${sdl_shadercross_SOURCE_DIR}/include")
 list(APPEND LIBRARIES "SDL3_shadercross-static")
-
 set(
   DXCOMPILER_DLL_SOURCE
   "${sdl_shadercross_BINARY_DIR}/external/DirectXShaderCompiler/${CMAKE_BUILD_TYPE}/bin/dxcompiler.dll"
 )
 set(DXCOMPILER_DLL_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/dxcompiler.dll")
 add_custom_target(
-  "CopyDXCompiler"
+  "copy_dxcompiler"
   COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${DXCOMPILER_DLL_SOURCE}" "${DXCOMPILER_DLL_DESTINATION}"
   DEPENDS "SDL3_shadercross-static"
 )
-list(APPEND DEPENDENCIES "CopyDXCompiler")
+list(APPEND DEPENDENCIES "copy_dxcompiler")
 
 CPMAddPackage(URI "gh:nothings/stb#${STB_VERSION}" NAME "stb")
 list(APPEND SYSTEM_INCLUDE_DIRECTORIES "${stb_SOURCE_DIR}")
