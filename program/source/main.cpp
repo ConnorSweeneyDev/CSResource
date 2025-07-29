@@ -9,6 +9,7 @@
 #include <iostream>
 #include <mutex>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "SDL3/SDL_init.h"
@@ -266,33 +267,47 @@ int try_main(int argc, char *argv[])
   include_content += "}";
   source_content += "}";
 
-  std::array<SDL_IOStream *, 2> output_files = {
-    SDL_IOFromFile((state.output_shader_directory / "resource.hpp").string().c_str(), "w"),
-    SDL_IOFromFile((state.output_source_directory / "resource.cpp").string().c_str(), "w")};
-
-  for (SDL_IOStream *output_file : output_files)
+  std::array<std::filesystem::path, 2> output_file_paths = {state.output_include_directory / "resource.hpp",
+                                                            state.output_source_directory / "resource.cpp"};
+  for (const std::filesystem::path &output_file_path : output_file_paths)
   {
+    SDL_IOStream *output_file = nullptr;
+    std::string output_content = "";
+    if (output_file_path.extension() == ".hpp")
+    {
+      output_file = SDL_IOFromFile(output_file_paths.at(0).string().c_str(), "w");
+      output_content = std::move(include_content);
+    }
+    else if (output_file_path.extension() == ".cpp")
+    {
+      output_file = SDL_IOFromFile(output_file_paths.at(1).string().c_str(), "w");
+      output_content = std::move(source_content);
+    }
+    else
+    {
+      SDL_ShaderCross_Quit();
+      SDL_Quit();
+      throw csr::exception("Unsupported output file type: " + output_file_path.extension().string());
+    }
+
     if (!output_file)
     {
       SDL_ShaderCross_Quit();
       SDL_Quit();
-      throw csr::sdl_exception("Failed to open include output file" + state.output_include_directory.string() +
-                               "/resource.hpp");
+      throw csr::sdl_exception("Failed to open output file " + output_file_path.string());
     }
-    if (SDL_WriteIO(output_file, include_content.c_str(), include_content.size()) != include_content.size())
+    if (SDL_WriteIO(output_file, output_content.c_str(), output_content.size()) != output_content.size())
     {
       SDL_CloseIO(output_file);
       SDL_ShaderCross_Quit();
       SDL_Quit();
-      throw csr::sdl_exception("Failed to write include output file " + state.output_include_directory.string() +
-                               "/resource.hpp");
+      throw csr::sdl_exception("Failed to write output file " + output_file_path.string());
     }
     if (!SDL_CloseIO(output_file))
     {
       SDL_ShaderCross_Quit();
       SDL_Quit();
-      throw csr::sdl_exception("Failed to close include output file " + state.output_include_directory.string() +
-                               "/resource.hpp");
+      throw csr::sdl_exception("Failed to close output file " + output_file_path.string());
     }
   }
 
