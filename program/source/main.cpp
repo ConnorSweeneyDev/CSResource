@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <array>
 #include <cstddef>
 #include <cstdlib>
 #include <exception>
@@ -265,53 +266,34 @@ int try_main(int argc, char *argv[])
   include_content += "}";
   source_content += "}";
 
-  SDL_IOStream *include_output =
-    SDL_IOFromFile((state.output_include_directory / "resource.hpp").string().c_str(), "w");
-  if (!include_output)
-  {
-    SDL_ShaderCross_Quit();
-    SDL_Quit();
-    throw csr::sdl_exception("Failed to open include output file" + state.output_include_directory.string() +
-                             "/resource.hpp");
-  }
-  if (SDL_WriteIO(include_output, include_content.c_str(), include_content.size()) != include_content.size())
-  {
-    SDL_CloseIO(include_output);
-    SDL_ShaderCross_Quit();
-    SDL_Quit();
-    throw csr::sdl_exception("Failed to write include output file " + state.output_include_directory.string() +
-                             "/resource.hpp");
-  }
-  if (!SDL_CloseIO(include_output))
-  {
-    SDL_ShaderCross_Quit();
-    SDL_Quit();
-    throw csr::sdl_exception("Failed to close include output file " + state.output_include_directory.string() +
-                             "/resource.hpp");
-  }
+  std::array<SDL_IOStream *, 2> output_files = {
+    SDL_IOFromFile((state.output_shader_directory / "resource.hpp").string().c_str(), "w"),
+    SDL_IOFromFile((state.output_source_directory / "resource.cpp").string().c_str(), "w")};
 
-  SDL_IOStream *source_output = SDL_IOFromFile((state.output_source_directory / "resource.cpp").string().c_str(), "w");
-  if (!source_output)
+  for (SDL_IOStream *output_file : output_files)
   {
-    SDL_ShaderCross_Quit();
-    SDL_Quit();
-    throw csr::sdl_exception("Failed to open source output file " + state.output_source_directory.string() +
-                             "/resource.cpp");
-  }
-  if (SDL_WriteIO(source_output, source_content.c_str(), source_content.size()) != source_content.size())
-  {
-    SDL_CloseIO(source_output);
-    SDL_ShaderCross_Quit();
-    SDL_Quit();
-    throw csr::sdl_exception("Failed to write source output file " + state.output_source_directory.string() +
-                             "/resource.cpp");
-  }
-  if (!SDL_CloseIO(source_output))
-  {
-    SDL_ShaderCross_Quit();
-    SDL_Quit();
-    throw csr::sdl_exception("Failed to close source output file " + state.output_source_directory.string() +
-                             "/resource.cpp");
+    if (!output_file)
+    {
+      SDL_ShaderCross_Quit();
+      SDL_Quit();
+      throw csr::sdl_exception("Failed to open include output file" + state.output_include_directory.string() +
+                               "/resource.hpp");
+    }
+    if (SDL_WriteIO(output_file, include_content.c_str(), include_content.size()) != include_content.size())
+    {
+      SDL_CloseIO(output_file);
+      SDL_ShaderCross_Quit();
+      SDL_Quit();
+      throw csr::sdl_exception("Failed to write include output file " + state.output_include_directory.string() +
+                               "/resource.hpp");
+    }
+    if (!SDL_CloseIO(output_file))
+    {
+      SDL_ShaderCross_Quit();
+      SDL_Quit();
+      throw csr::sdl_exception("Failed to close include output file " + state.output_include_directory.string() +
+                               "/resource.hpp");
+    }
   }
 
   SDL_ShaderCross_Quit();
