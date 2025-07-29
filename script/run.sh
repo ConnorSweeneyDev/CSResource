@@ -1,6 +1,7 @@
 #!/bin/bash
 
 OUTPUT=$(find . -name "CSResource.exe")
-ARGUMENTS="resource/shader/main.vert resource/shader/main.frag build/Output/Shader build/Output/Include build/Output/Source"
+SHADER_FILES=$(find resource/shader -type f -name "*.vert" -o -name "*.frag")
+OUTPUT_DIRECTORIES="build/Output/Shader build/Output/Include build/Output/Source"
 
-$OUTPUT $ARGUMENTS
+$OUTPUT $SHADER_FILES $OUTPUT_DIRECTORIES
