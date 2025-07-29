@@ -267,7 +267,7 @@ int try_main(int argc, char *argv[])
   include_content += "}";
   source_content += "}";
 
-  std::array<std::filesystem::path, 2> output_file_paths = {state.output_include_directory / "resource.hpp",
+  const std::array<std::filesystem::path, 2> output_file_paths = {state.output_include_directory / "resource.hpp",
                                                             state.output_source_directory / "resource.cpp"};
   for (const std::filesystem::path &output_file_path : output_file_paths)
   {
