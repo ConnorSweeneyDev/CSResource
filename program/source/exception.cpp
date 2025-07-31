@@ -1,6 +1,6 @@
 #include "exception.hpp"
 
-namespace csr
+namespace csr::utility
 {
   const char *exception::what() const noexcept
   {

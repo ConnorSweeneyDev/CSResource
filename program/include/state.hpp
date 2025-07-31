@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace csr
+namespace csr::base
 {
   struct resource
   {
@@ -14,7 +14,9 @@ namespace csr
       SHADER,
       TEXTURE
     };
+
     bool operator<(const resource &other) const;
+
     type type = INVALID;
     std::filesystem::path path = "";
     std::string include_text = "";

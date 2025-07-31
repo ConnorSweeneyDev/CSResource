@@ -3,7 +3,7 @@
 #include <exception>
 #include <string>
 
-namespace csr
+namespace csr::utility
 {
   class exception : public std::exception
   {

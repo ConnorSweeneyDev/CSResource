@@ -8,15 +8,15 @@
 
 #include "exception.hpp"
 
-namespace csr
+namespace csr::base
 {
   bool resource::operator<(const resource &other) const { return path < other.path; }
 
   state::state(int argc, char *argv[])
   {
     if (argc < 5)
-      throw exception("Usage: CSResource (<resource1> <resource2> ... <resourceN>) <output_shader_directory> "
-                      "<output_include_directory> <output_source_directory>]");
+      throw utility::exception("Usage: CSResource (<resource1> <resource2> ... <resourceN>) <output_shader_directory> "
+                               "<output_include_directory> <output_source_directory>]");
 
     std::vector<std::filesystem::path> output_directories;
     std::set<resource> unique_resources;
@@ -41,13 +41,13 @@ namespace csr
       {
         std::filesystem::path resource = argv[index];
         if (!std::filesystem::exists(resource) || !std::filesystem::is_regular_file(resource))
-          throw exception("Resource does not exist or is not a valid file: " + resource.string());
+          throw utility::exception("Resource does not exist or is not a valid file: " + resource.string());
         if (resource.extension() == ".vert" || resource.extension() == ".frag")
           unique_resources.emplace(resource::SHADER, std::move(resource));
         else if (resource.extension() == ".png")
-          throw exception("Texture resources are not implemented yet: " + resource.string());
+          throw utility::exception("Texture resources are not implemented yet: " + resource.string());
         else
-          throw exception("Unsupported resource type: " + resource.extension().string());
+          throw utility::exception("Unsupported resource type: " + resource.extension().string());
       }
     }
     for (const resource &resource : unique_resources) { resources.emplace_back(resource.type, resource.path); }
