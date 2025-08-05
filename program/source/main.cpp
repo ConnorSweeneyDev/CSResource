@@ -53,7 +53,7 @@ int try_main(int argc, char *argv[])
                                 "    const std::vector<unsigned char> dxil = {};\n"
                                 "    const std::vector<unsigned char> spirv = {};\n"
                                 "  };\n"
-                                "  struct compiled_texture\n"
+                                "  struct texture\n"
                                 "  {\n"
                                 "    const std::vector<unsigned char> data = {};\n"
                                 "    const int width = 0;\n"
@@ -254,7 +254,7 @@ int try_main(int argc, char *argv[])
           return;
         }
 
-        resource.source_text += "  const compiled_texture " + resource.path.stem().string() + "_texture = {\n    {";
+        resource.source_text += "  const texture " + resource.path.stem().string() + "_texture = {\n    {";
         for (int index = 0; index < width * height * channels; ++index)
         {
           resource.source_text += csr::utility::unsigned_char_to_hex(image_data[index]);
@@ -271,7 +271,7 @@ int try_main(int argc, char *argv[])
 
         resource.source_text += "},\n    " + std::to_string(width) + ",\n    " + std::to_string(height) + ",\n    " +
                                 std::to_string(channels) + "};\n";
-        resource.include_text += "  extern const compiled_texture " + resource.path.stem().string() + "_texture;\n";
+        resource.include_text += "  extern const texture " + resource.path.stem().string() + "_texture;\n";
       }
     });
   if (!exceptions.empty())
