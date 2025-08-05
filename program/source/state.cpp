@@ -45,7 +45,7 @@ namespace csr::base
         if (resource.extension() == ".vert" || resource.extension() == ".frag")
           unique_resources.emplace(resource::SHADER, std::move(resource));
         else if (resource.extension() == ".png")
-          throw utility::exception("Texture resources are not implemented yet: " + resource.string());
+          unique_resources.emplace(resource::TEXTURE, std::move(resource));
         else
           throw utility::exception("Unsupported resource type: " + resource.extension().string());
       }
