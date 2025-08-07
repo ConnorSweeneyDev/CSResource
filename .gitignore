@@ -1,29 +1,12 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Generated Clangd Files
-compile_commands.json
-.cache
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.dylib
-
-# Fortran Module Files
-*.mod
-*.smod
+# Development Output
+.cache/
+.claude/
+.vscode/
+.vs/
 
 # Build Output
 build/
 external/
 CPM_modules/
+compile_commands.json
 cpm-package-lock.cmake
