@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <mutex>
+#include <regex>
 #include <string>
 #include <utility>
 #include <vector>
@@ -305,18 +306,15 @@ int try_main(int argc, char *argv[])
             chunk.resize(static_cast<size_t>(chunk_length));
             png.read(chunk.data(), chunk_length);
             std::string comment(chunk.begin(), chunk.end());
-            std::string keyword = "frame_width: ";
-            if (size_t start_pos = comment.find(keyword); start_pos != std::string::npos)
-            {
-              start_pos += keyword.length();
-              size_t end_pos = comment.find_first_of('<', start_pos);
-              frame_width = std::stoi(comment.substr(start_pos, end_pos - start_pos));
-            }
+            std::regex frame_width_regex(R"(frame_width:\s*(\d+))");
+            std::smatch match;
+            if (std::regex_search(comment, match, frame_width_regex))
+              frame_width = std::stoi(match[1].str());
             else
             {
               std::lock_guard<std::mutex> lock(exceptions_mutex);
               exceptions.emplace_back(std::make_exception_ptr(csr::utility::exception(
-                "Texture file must have a 'frame_width: x' comment {}", resource.path.string())));
+                "Texture file must have a 'frame_width: int' comment {}", resource.path.string())));
               return;
             }
             found_text_chunk = true;
@@ -329,7 +327,7 @@ int try_main(int argc, char *argv[])
         {
           std::lock_guard<std::mutex> lock(exceptions_mutex);
           exceptions.emplace_back(std::make_exception_ptr(
-            csr::utility::exception("Texture file must have a 'frame_width: x' comment {}", resource.path.string())));
+            csr::utility::exception("Texture file must have a 'frame_width: int' comment {}", resource.path.string())));
           return;
         }
 
