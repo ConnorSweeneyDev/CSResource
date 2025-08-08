@@ -25,11 +25,26 @@ namespace csr::base
 
   struct state
   {
+    enum task
+    {
+      INVALID,
+      COMPILE,
+      LIST,
+      SET
+    };
+
     state(int argc, char *argv[]);
+
+    task task = INVALID;
 
     std::filesystem::path output_shader_directory = "";
     std::filesystem::path output_include_directory = "";
     std::filesystem::path output_source_directory = "";
     std::vector<resource> resources = {};
+
+    std::filesystem::path texture_directory = "";
+
+    std::filesystem::path texture_path = "";
+    unsigned int frame_width = 0;
   };
 }
