@@ -2,6 +2,15 @@
 An executable for loading resources into a C++ compilation unit, intended for use in
 [CSEngine](https://github.com/ConnorSweeneyDev/CSEngine).
 
+# How to Use
+- `CSResource compile (<resource1> <resource2> ... <resourceN>) <output_shader_directory> <output_include_directory>
+  <output_source_directory>`: Compiles the given resources (shaders and textures) into a C++ compilation unit
+  (resource.hpp and resource.cpp).
+- `CSResource list <texture_directory>`: Lists the custom metadata values of all textures in the given directory
+  recursively.
+- `CSResource set <texture> <frame_width>`: Sets the frame width (int) of the given texture atlas stored as a custom png
+  metadata value with header cSRe.
+
 # How to Build
 This project is optimized to be built on Windows using MSVC.
 
