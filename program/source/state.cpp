@@ -72,15 +72,19 @@ namespace csr::base
     else if (std::string(argv[1]) == "set")
     {
       task = SET;
-      if (argc != 4) throw utility::exception("Set: CSResource set <texture> <frame_width>");
+      if (argc != 6)
+        throw utility::exception("Set: CSResource set <texture> <frame_width> <frame_height> <frame_count>");
       texture_path = argv[2];
       try
       {
         frame_width = std::stoul(argv[3]);
+        frame_height = std::stoul(argv[4]);
+        frame_count = std::stoul(argv[5]);
       }
       catch (const std::exception &error)
       {
-        throw utility::exception("Invalid frame width {}: {}", argv[3], error.what());
+        throw utility::exception("Invalid frame dimensions or count: {}x{} {}f. Error: {}", std::string(argv[3]),
+                                 argv[4], argv[5], error.what());
       }
     }
     else

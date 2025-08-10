@@ -46,5 +46,7 @@ namespace csr::base
 
     std::filesystem::path texture_path = "";
     unsigned int frame_width = 0;
+    unsigned int frame_height = 0;
+    unsigned int frame_count = 0;
   };
 }
