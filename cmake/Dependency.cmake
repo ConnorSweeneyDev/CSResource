@@ -24,8 +24,6 @@ CPMAddPackage(
     "SDLSHADERCROSS_STATIC ON"
     "SDLSHADERCROSS_CLI OFF"
 )
-list(APPEND SYSTEM_INCLUDE_DIRECTORIES "${sdl_shadercross_SOURCE_DIR}/include")
-list(APPEND LIBRARIES "SDL3_shadercross-static")
 set(
   DXCOMPILER_DLL_SOURCE
   "${sdl_shadercross_BINARY_DIR}/external/DirectXShaderCompiler/${CMAKE_BUILD_TYPE}/bin/dxcompiler.dll"
@@ -37,6 +35,8 @@ add_custom_target(
   DEPENDS "SDL3_shadercross-static"
 )
 list(APPEND DEPENDENCIES "copy_dxcompiler")
+list(APPEND SYSTEM_INCLUDE_DIRECTORIES "${sdl_shadercross_SOURCE_DIR}/include")
+list(APPEND LIBRARIES "SDL3_shadercross-static")
 
 CPMAddPackage(URI "gh:nothings/stb#${STB_VERSION}" NAME "stb")
 list(APPEND SYSTEM_INCLUDE_DIRECTORIES "${stb_SOURCE_DIR}")
