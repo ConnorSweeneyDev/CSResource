@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
@@ -93,7 +94,7 @@ int try_main(int argc, char *argv[])
                                   "      };\n"
                                   "      const unsigned int width = {};\n"
                                   "      const unsigned int height = {};\n"
-                                  "      const std::unordered_map<const std::string_view, const group> groups = {};\n"
+                                  "      const std::unordered_map<std::string_view, const group> groups = {};\n"
                                   "    };\n"
                                   "    const std::span<const unsigned char> image = {};\n"
                                   "    const image_data image_data = {};\n"
@@ -364,7 +365,8 @@ int try_main(int argc, char *argv[])
               const float left = static_cast<float>(frame_x * frame_data.width) / static_cast<float>(width);
               const float bottom = static_cast<float>(frame_y * frame_data.height) / static_cast<float>(height);
               const float right = static_cast<float>((frame_x + 1) * frame_data.width) / static_cast<float>(width);
-              frame_data_floats += std::vformat("{{{}, {}, {}, {}}}", std::make_format_args(top, left, bottom, right));
+              frame_data_floats +=
+                std::vformat("{{{:#g}f, {:#g}f, {:#g}f, {:#g}f}}", std::make_format_args(top, left, bottom, right));
               if (frame < group.end_frame - 1) frame_data_floats += ",\n     ";
             }
             frame_data_floats += "}};";
