@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <array>
-#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
@@ -94,7 +93,7 @@ int try_main(int argc, char *argv[])
                                   "      };\n"
                                   "      const unsigned int width = {};\n"
                                   "      const unsigned int height = {};\n"
-                                  "      const std::unordered_map<std::string_view, const group> groups = {};\n"
+                                  "      const std::unordered_map<std::string, const group> groups = {};\n"
                                   "    };\n"
                                   "    const std::span<const unsigned char> image = {};\n"
                                   "    const image_data image_data = {};\n"
