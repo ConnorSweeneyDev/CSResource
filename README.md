@@ -8,8 +8,9 @@ An executable for loading resources into a C++ compilation unit, intended for us
   (resource.hpp and resource.cpp).
 - `CSResource list <texture_directory>`: Lists the custom metadata values of all textures in the given directory
   recursively in the form `FILE: WIDTHxHEIGHT FRAMESf || NULL`.
-- `CSResource set <texture> <frame_width> <frame_height> <frame_count>`: Sets the frame data (unsigned int) of the given
-  texture atlas stored as a custom png metadata value with header cSRe.
+- `CSResource set <texture> <frame_width> <frame_height> (<name1>:<start_frame1>:<end_frame1>
+  <name2>:<start_frame2>:<end_frame2> ... <nameN>:<start_frameN>:<end_frameN>)`: Sets the frame width, height and named
+  groups for the given texture atlas stored as a custom png metadata value with header cSRe.
 
 # How to Build
 This project is optimized to be built on Windows using MSVC.

@@ -1,5 +1,6 @@
 #include "state.hpp"
 
+#include <cstddef>
 #include <exception>
 #include <filesystem>
 #include <set>
@@ -16,11 +17,13 @@ namespace csr::base
   state::state(int argc, char *argv[])
   {
     if (argc < 3)
-      throw utility::exception("Usage:\n"
-                               " - CSResource compile (<resource1> <resource2> ... <resourceN>) "
-                               "<output_shader_directory> <output_include_directory> <output_source_directory>\n"
-                               " - CSResource list <texture_directory>\n"
-                               " - CSResource set <texture> <frame_width>");
+      throw utility::exception(
+        "Usage:\n"
+        " - CSResource compile (<resource1> <resource2> ... <resourceN>) "
+        "<output_shader_directory> <output_include_directory> <output_source_directory>\n"
+        " - CSResource list <texture_directory>\n"
+        " - CSResource set <texture> <frame_width> <frame_height> (<name1>:<start_frame1>:<end_frame1> "
+        "<name2>:<start_frame2>:<end_frame2> ... <nameN>:<start_frameN>:<end_frameN>)");
 
     if (std::string(argv[1]) == "compile")
     {
@@ -72,19 +75,44 @@ namespace csr::base
     else if (std::string(argv[1]) == "set")
     {
       task = SET;
-      if (argc != 6)
-        throw utility::exception("Set: CSResource set <texture> <frame_width> <frame_height> <frame_count>");
+      if (argc < 6)
+        throw utility::exception(
+          "Set: CSResource set <texture> <frame_width> <frame_height> (<name1>:<start_frame1>:<end_frame1> "
+          "<name2>:<start_frame2>:<end_frame2> ... <nameN>:<start_frameN>:<end_frameN>)");
       texture_path = argv[2];
       try
       {
-        frame_width = std::stoul(argv[3]);
-        frame_height = std::stoul(argv[4]);
-        frame_count = std::stoul(argv[5]);
+        frame_data.width = std::stoul(argv[3]);
+        frame_data.height = std::stoul(argv[4]);
       }
       catch (const std::exception &error)
       {
-        throw utility::exception("Invalid frame dimensions or count: {}x{} {}f. Error: {}", std::string(argv[3]),
-                                 argv[4], argv[5], error.what());
+        throw utility::exception("Invalid frame dimensions: {}x{}. Error: {}", std::string(argv[3]), argv[4],
+                                 error.what());
+      }
+
+      for (size_t index = 5; index < static_cast<size_t>(argc); ++index)
+      {
+        std::string argument = argv[index];
+        size_t first_colon = argument.find(':');
+        size_t second_colon = argument.find(':', first_colon + 1);
+        if (first_colon == std::string::npos || second_colon == std::string::npos || first_colon == second_colon)
+          throw utility::exception("Invalid frame group specification {}", argument);
+        std::string name = argument.substr(0, first_colon);
+        unsigned int starting_frame = {};
+        unsigned int last_frame = {};
+        try
+        {
+          starting_frame = std::stoul(argument.substr(first_colon + 1, second_colon));
+          last_frame = std::stoul(argument.substr(second_colon + 1));
+        }
+        catch (const std::exception &error)
+        {
+          throw utility::exception("Invalid frame group specification {}. Error: {}", argument, error.what());
+        }
+        for (const auto &group : frame_data.groups)
+          if (group.name == name) throw utility::exception("Duplicate frame group name {}", name);
+        frame_data.groups.push_back({std::move(name), starting_frame, last_frame});
       }
     }
     else
