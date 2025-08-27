@@ -55,7 +55,7 @@ int try_main(int argc, char *argv[])
                                   "#pragma once\n\n"
                                   "#include <cstddef>\n"
                                   "#include <span>\n"
-                                  "#include <string_view>\n"
+                                  "#include <string>\n"
                                   "#include <unordered_map>\n\n"
                                   "namespace cse::resource\n"
                                   "{\n"
